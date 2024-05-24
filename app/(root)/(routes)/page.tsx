@@ -12,13 +12,9 @@ import { useEffect } from "react";
   useEffect(()=>{
     if(!isOpen){
       onOpen();
-    }
+    } 
   },[isOpen,onOpen])
-    return (
-      <div>
-        RootPage
-              </div>
-    );
+    return null
   }
   
 
