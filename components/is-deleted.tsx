@@ -15,26 +15,25 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 
 type PopoverTriggerProps=React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
-interface StoreSwitcherProps extends PopoverTriggerProps{
+interface IsDeletedProps extends PopoverTriggerProps{
         items:Store[];
 };
 
-export default function StoreSwitcher({
+export default function SoftDeleted({
     className,
     items=[]
-}:StoreSwitcherProps){
+}:IsDeletedProps){
   const storeModal=useStoreModal();
   const params=useParams();
   const router=useRouter();
   
   
   //this maps the list of all the items
-  const formattedItems = items
-        .filter((item) => !item.isDeleted)
-        .map((item) => ({
-            label: item.name,
-            value: item.id,
-        }));
+  const formattedItems=items.map((item)=>({
+    label:item.name,
+    value:item.id
+  }));
+  
   //for currentstore information fetched from formattedItems
   const currentStore=formattedItems.find((item)=>item.value===params.storeId);
 
@@ -71,10 +70,10 @@ export default function StoreSwitcher({
                 <Command>
                     {/* //This is the first box inside the popover */}
                     <CommandList>
-                        <CommandInput 
+                        {/* <CommandInput 
                         placeholder="Search Store..."/>
-                        <CommandEmpty >No store found</CommandEmpty>
-                        <CommandGroup heading="Stores">
+                        <CommandEmpty >No store found</CommandEmpty> */}
+                        <CommandGroup heading="Deleted Stores">
                             {formattedItems.map((store)=>(
                                 <CommandItem
                                 key={store.value}
@@ -93,20 +92,7 @@ export default function StoreSwitcher({
                             </CommandGroup> 
                     </CommandList>
                         {/* THE INNER PART */}
-                    <CommandList>
-                        <CommandGroup>
-                            <CommandItem
-                            onSelect={()=>{
-                                setOpen(false)
-                                storeModal.onOpen()
-                            }}
-                            >
-                            <PlusCircle  
-                            className="mr-2 h-5 w-5"/>
-                            Create Store
-                            </CommandItem>
-                        </CommandGroup>
-                    </CommandList>
+                  
                     </Command> 
             </PopoverContent>
         </Popover>

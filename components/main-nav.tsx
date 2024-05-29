@@ -15,9 +15,24 @@ export function MainNav({
 
     const routes=[
         {
+            href: `/${params.storeId}`,
+            label:'Overview',
+            active:pathname===`/${params.storeId}`
+        },
+        {
+            href: `/${params.storeId}/billboards`,
+            label:'Billboards',
+            active:pathname===`/${params.storeId}/billboards`
+        },
+        {
             href: `/${params.storeId}/settings`,
             label:'Settings',
             active:pathname===`/${params.storeId}/settings`
+        },
+        {
+            href: `/${params.storeId}/deletedstores`,
+            label:'Deletedstores',
+            active:pathname===`/${params.storeId}/deletedstores`
         }
     ];
 
@@ -36,6 +51,6 @@ export function MainNav({
                     {route.label}
                 </Link>
             ))}
-        </nav>
+        </nav> 
     )
 }

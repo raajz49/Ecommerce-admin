@@ -54,4 +54,29 @@ export async function GET(req: Request) {
   
   
 
+//THIS IS FOR SOFTDELETE
+  export async function GETDELETEDSTORE(req: Request) {
+    try {
+      const { userId } = auth(); // Destructure userId from the auth response
+  
+      if (!userId) {
+        return new NextResponse('Unauthorized', { status: 401 });
+      }
+  
+      const finduser = await prismadb.store.findFirst({
+        where: {
+          userId: userId,
+          isDeleted:true,
+        },
+      });
+  
+      return NextResponse.json(finduser);
+    } catch (error) {
+      console.error('[STORE_GET]', error);
+      return new NextResponse('Internal Server Error', { status: 500 });
+    }
+  }
+  
+  
+
 

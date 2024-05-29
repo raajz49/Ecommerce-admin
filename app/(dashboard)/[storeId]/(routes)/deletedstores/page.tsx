@@ -1,9 +1,7 @@
-import { UserButton } from "@clerk/nextjs"
-import {MainNav} from "@/components/main-nav"
-import StoreSwitcher from "@/components/store-switcher"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import prismadb from "@/lib/prismadb"
+import SoftDeleted from "@/components/is-deleted"
 
 
 const Navbar = async() => {
@@ -17,20 +15,15 @@ const Navbar = async() => {
   const stores=await prismadb.store.findMany({
     where:{
       userId,
-      isDeleted:false,
+      isDeleted:true,
     },
   })
   return (
     <div className=" border-b-2">
    <div className=" flex h-16 items-center px-4">
-    <StoreSwitcher
+    <SoftDeleted
     items={stores}  />
-    <MainNav className="mx-6">
-        This will be routes
-    </MainNav>
-    <div className=" ml-auto flex items-center space-x-4">
-        <UserButton  afterSignOutUrl="/" />
-    </div>
+ 
    </div>
     </div>
   )
