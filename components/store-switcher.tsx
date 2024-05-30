@@ -30,21 +30,21 @@ export default function StoreSwitcher({
   
   //this maps the list of all the items
   const formattedItems = items
-        .filter((item) => !item.isDeleted)
-        .map((item) => ({
-            label: item.name,
-            value: item.id,
-        }));
+  .filter((item) => !item.isDeleted)
+  .map((item) => ({
+      label: item.name,
+      value: item.id,
+  }));
   //for currentstore information fetched from formattedItems
   const currentStore=formattedItems.find((item)=>item.value===params.storeId);
-
+  
         const [open,setOpen]=useState(false);
         const onStoreSelect=(store:{value:string,label:string})=>{
             setOpen(false);
             router.push(`/${store.value}`)
         }
     return(
-
+            
         //the search bar starts from here
         <Popover open={open} onOpenChange={setOpen}>
             
@@ -60,10 +60,12 @@ export default function StoreSwitcher({
                 >
 
                     <StoreIcon className="mr-2 h-4 w-4" />
-                   {currentStore?.label}
+                    {currentStore ? currentStore.label : "Select a Store"}
                     <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
-                </Button> 
+                                </Button> 
+                                
             </PopoverTrigger>
+            
 
                 {/* The popover starts from here after the click on button */}
                 {/* this is the box */}

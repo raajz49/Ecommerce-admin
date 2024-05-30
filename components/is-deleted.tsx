@@ -6,11 +6,13 @@ import { useParams, useRouter } from "next/navigation";
 
 
 import { Popover,PopoverContent,PopoverTrigger } from "@/components/ui/popover";
-import useStoreModal from "@/hooks/use-store-modal";
 import { Button } from "./ui/button";
-import { Check, ChevronsUpDown, PlusCircle, Store as StoreIcon } from "lucide-react";
+import { ChevronsUpDown, RotateCw, Store as StoreIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
+import { Command, CommandGroup, CommandItem, CommandList,  } from "@/components/ui/command";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { AlertModal } from "./modals/alert.modal";
 
 
 type PopoverTriggerProps=React.ComponentPropsWithoutRef<typeof PopoverTrigger>
@@ -23,7 +25,7 @@ export default function SoftDeleted({
     className,
     items=[]
 }:IsDeletedProps){
-  const storeModal=useStoreModal();
+//   const storeModal=useStoreModal();
   const params=useParams();
   const router=useRouter();
   
@@ -38,13 +40,38 @@ export default function SoftDeleted({
   const currentStore=formattedItems.find((item)=>item.value===params.storeId);
 
         const [open,setOpen]=useState(false);
+        const [retrive,setRetrive]=useState(false);
+        const [loading,setLoading]=useState(false);
         const onStoreSelect=(store:{value:string,label:string})=>{
             setOpen(false);
             router.push(`/${store.value}`)
         }
-    return(
 
-        //the search bar starts from here
+        const onDelete = async () => {
+            try {
+                setLoading(true);
+                await axios.delete(`/api/stores/${params.storeId}`);
+                router.refresh();
+                router.push("/")
+                toast.success("Store Retrived");
+                
+            } catch (error) {
+                toast.error("Can't retrive this store");
+            } finally {
+                setLoading(false);
+                setRetrive(false);
+            }
+        };
+
+    return(
+            <>
+              <AlertModal 
+                isOpen={retrive}
+                onClose={() => setRetrive(false)}
+                onConfirm={onDelete}
+                loading={loading}
+            />
+        {/* the search bar starts from here */}
         <Popover open={open} onOpenChange={setOpen}>
             
             {/* This makes the button trigger on click */}
@@ -59,7 +86,8 @@ export default function SoftDeleted({
                 >
 
                     <StoreIcon className="mr-2 h-4 w-4" />
-                   {currentStore?.label}
+                   {/* {currentStore?.label} */}
+                   Deleted Store
                     <ChevronsUpDown className="ml-auto h-4 w-4 shrink-0 opacity-50" />
                 </Button> 
             </PopoverTrigger>
@@ -77,16 +105,25 @@ export default function SoftDeleted({
                             {formattedItems.map((store)=>(
                                 <CommandItem
                                 key={store.value}
-                                onSelect={()=>onStoreSelect(store)}
+                                // onSelect={()=>onStoreSelect(store)}
                                 className="text-sm"
                                 >
-                                <StoreIcon className="mr-2 h-4 w-4" />
+                                {/* <Check className="mr-2 h-4 w-4" /> */}
                                 {store.label}
-                                <Check 
-                                className={cn(
-                                    "ml-auto h-4 w-4",
-                                    currentStore?.value===store.value?"opacity-100":"opacity-0"
-                                    )}/>
+                                
+                         <Button
+                         disabled={loading}
+                         variant="secondary"
+                         size="sm"
+                         onClick={() => setRetrive(false)}
+                         className={cn(
+                         "ml-auto h-4 w-4opacity-100"
+                         )}
+                         >
+                        <RotateCw className="h-4 w-4"  />
+                       </Button>
+             
+             
                                 </CommandItem>
                             ))}
                             </CommandGroup> 
@@ -96,5 +133,6 @@ export default function SoftDeleted({
                     </Command> 
             </PopoverContent>
         </Popover>
+        </>
     );
 };

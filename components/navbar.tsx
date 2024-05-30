@@ -17,7 +17,6 @@ const Navbar = async() => {
   const stores=await prismadb.store.findMany({
     where:{
       userId,
-      isDeleted:false,
     },
   })
   return (

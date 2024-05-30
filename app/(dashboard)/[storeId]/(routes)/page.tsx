@@ -14,10 +14,11 @@ const DashboardPage:React.FC<DashboardProps> =async ({params}) => {
             id:params.storeId,
         }
     })
+
   return (
     <div>
-      Active store:{store?.name}  
-        </div>
+      Active store: {store ? store.name : <span>Select a Store</span>}
+    </div>
   )
 }
 
